@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { DockerProvider, useDocker } from './context/dockerContext';
 import Sidebar from './components/layout/sidebar';

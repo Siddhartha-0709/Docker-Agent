@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -18,8 +19,8 @@ export const DockerProvider = ({ children }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [loading, setLoading] = useState(false);
   
-  const API_BASE_URL = 'http://localhost:3000/api/v1';
-  const WS_URL = 'ws://localhost:3001';
+  const API_BASE_URL = 'http://210.79.128.250:3000/api/v1';
+  const WS_URL = 'ws://210.79.128.250:3001';
 
   useEffect(() => {
     if (host) {
