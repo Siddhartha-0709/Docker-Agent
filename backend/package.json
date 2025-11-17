@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dockerode": "^4.0.9",
+    "express": "^5.1.0",
+    "ws": "^8.18.3"
+  }
+}

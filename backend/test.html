@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Docker Live Logs</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #111;
+      color: #0f0;
+      padding: 1rem;
+    }
+    #logs {
+      border: 1px solid #0f0;
+      padding: 10px;
+      height: 400px;
+      overflow-y: auto;
+      background: #000;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h2>Docker Container Live Logs</h2>
+  <input type="text" id="cid" placeholder="Enter container ID" style="width:300px;" />
+  <button id="connect">Connect</button>
+
+  <div id="logs"></div>
+
+  <script>
+    document.getElementById('connect').onclick = () => {
+      const containerId = document.getElementById('cid').value.trim();
+      if (!containerId) return alert('Please enter a container ID');
+      
+      const ws = new WebSocket(`ws://localhost:8081/?id=${containerId}`);
+      const logsDiv = document.getElementById('logs');
+      
+      ws.onopen = () => logsDiv.innerHTML = "🔗 Connected...<br>";
+      ws.onmessage = (msg) => {
+        logsDiv.innerHTML += msg.data + "<br>";
+        logsDiv.scrollTop = logsDiv.scrollHeight;
+      };
+      ws.onerror = (err) => logsDiv.innerHTML += `<br>❌ Error: ${err.message}`;
+      ws.onclose = () => logsDiv.innerHTML += "<br>🔒 Connection closed";
+    };
+  </script>
+</body>
+</html>

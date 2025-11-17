@@ -1,0 +1,307 @@
+{
+  "info": {
+    "name": "Docker Agent API",
+    "description": "Complete API collection for Docker Agent Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "ws_url",
+      "value": "ws://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "container_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "image_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "network_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "volume_name",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Containers",
+      "item": [
+        {
+          "name": "Get All Containers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/containers/getAll",
+              "host": ["{{base_url}}"],
+              "path": ["containers", "getAll"]
+            }
+          }
+        },
+        {
+          "name": "Start Container",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/containers/start?id={{container_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["containers", "start"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{container_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Stop Container",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/containers/stop?id={{container_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["containers", "stop"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{container_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Restart Container",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/containers/restart?id={{container_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["containers", "restart"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{container_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Remove Container",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/containers/remove?id={{container_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["containers", "remove"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{container_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Inspect Container",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/containers/inspect?id={{container_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["containers", "inspect"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{container_id}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "item": [
+        {
+          "name": "List All Images",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/images/listImages",
+              "host": ["{{base_url}}"],
+              "path": ["images", "listImages"]
+            }
+          }
+        },
+        {
+          "name": "Run Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/images/runImage?id={{image_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["images", "runImage"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{image_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Image",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/images/deleteImage?id={{image_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["images", "deleteImage"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{image_id}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Networks",
+      "item": [
+        {
+          "name": "List All Networks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/networks/networks",
+              "host": ["{{base_url}}"],
+              "path": ["networks", "networks"]
+            }
+          }
+        },
+        {
+          "name": "Get Container Ports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/networks/ports?id={{container_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["networks", "ports"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{container_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Container Network Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/networks/network-info?id={{container_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["networks", "network-info"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{container_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Inspect Network",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/networks/inspect?id={{network_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["networks", "inspect"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{network_id}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Volumes",
+      "item": [
+        {
+          "name": "List All Volumes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/volumes/list",
+              "host": ["{{base_url}}"],
+              "path": ["volumes", "list"]
+            }
+          }
+        },
+        {
+          "name": "Delete Volume",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/volumes/delete?volumeName={{volume_name}}",
+              "host": ["{{base_url}}"],
+              "path": ["volumes", "delete"],
+              "query": [
+                {
+                  "key": "volumeName",
+                  "value": "{{volume_name}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
