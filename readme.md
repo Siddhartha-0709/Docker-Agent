@@ -67,60 +67,143 @@ Inspect and control containers, images, volumes, and networks directly from your
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Installation
 
 ### Prerequisites
 
 - Docker & Docker Compose installed
-- Docker Remote API enabled on target host
+- Docker Remote API access on target host
 - Clerk account (for authentication)
 
-### Installation
+---
 
-1. **Clone the repository**
+### Step 1️⃣: Enable Docker Remote API (Port 2375)
+
+> ⚠️ **Security Warning:** Only enable this on **trusted machines**. Exposing port 2375 without TLS is insecure and should only be used in development or behind a firewall.
+
+#### On Linux (systemd):
+
+1. **Create override configuration:**
 ```bash
-   git clone https://github.com/Siddhartha-0709/Docker-Agent.git
-   cd Docker-Agent
+   sudo mkdir -p /etc/systemd/system/docker.service.d
+   sudo nano /etc/systemd/system/docker.service.d/override.conf
 ```
 
-2. **Configure environment variables**
-   
-   Set your Docker host IP in the frontend `.env` or via the UI modal.
+2. **Add the following configuration:**
+```ini
+   [Service]
+   ExecStart=
+   ExecStart=/usr/bin/dockerd -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375
+```
 
-3. **Launch with Docker Compose**
+3. **Reload and restart Docker:**
 ```bash
-   docker-compose up -d
+   sudo systemctl daemon-reexec
+   sudo systemctl restart docker
 ```
 
-4. **Access the application**
-   
-   Open your browser and navigate to:
+4. **Verify the connection:**
+```bash
+   docker -H tcp://<YOUR_HOST_IP>:2375 info
 ```
-   http://localhost:5173
+   
+   You should see Docker info output from the remote host.
+
+---
+
+### Step 2️⃣: Clone the Repository
+```bash
+git clone https://github.com/Siddhartha-0709/Docker-Agent.git
+cd Docker-Agent
 ```
 
-5. **Authenticate**
-   
-   Log in via Clerk to start managing your Docker hosts.
+---
+
+### Step 3️⃣: Configure Frontend
+
+You have two options to set the Docker host IP:
+
+**Option A: Environment Variable**
+
+Create or edit `.env` in the frontend directory:
+```ini
+VITE_HOST=YOUR_HOST_IP
+```
+
+**Option B: UI Modal**
+
+Use the configuration modal that appears on the frontend to set the host dynamically at runtime.
+
+---
+
+### Step 4️⃣: Launch with Docker Compose
+```bash
+docker-compose up -d
+```
+
+This will:
+- Spin up the frontend container (port 5173)
+- Spin up the backend container
+- Establish connection to your Docker host on port 2375
+
+**Note:** Ensure your Docker host on port 2375 is accessible by the backend container.
+
+---
+
+### Step 5️⃣: Access the Dashboard
+
+Open your browser and navigate to:
+```
+http://localhost:5173
+```
+
+Log in via **Clerk** to access the full dashboard functionality.
+
+---
+
+### Step 6️⃣: Important Security Notes
+
+- 🔒 **Never expose port 2375 publicly** – Always restrict access via firewall rules
+- 🔐 **Consider enabling TLS** for secure remote API access (port 2376)
+- 🛡️ **Use behind a VPN** or internal network only
+- 📡 **WebSocket ports** – Ensure internal ports are open if using firewalls
+- 🔑 **Authentication** – Always keep Clerk credentials secure
+
+#### Optional: Enable TLS (Recommended for Production)
+```bash
+# Generate certificates
+openssl genrsa -aes256 -out ca-key.pem 4096
+openssl req -new -x509 -days 365 -key ca-key.pem -sha256 -out ca.pem
+
+# Configure Docker with TLS
+dockerd --tlsverify \
+  --tlscacert=ca.pem \
+  --tlscert=server-cert.pem \
+  --tlskey=server-key.pem \
+  -H=0.0.0.0:2376
+```
 
 ---
 
 ## 🔒 Security Considerations
 
-> ⚠️ **Important:** This project requires Docker Remote API to be enabled on the target host.
+> ⚠️ **Critical:** This project requires Docker Remote API to be enabled on the target host.
 
 ### Best Practices
 
 - ✅ **Use behind a VPN** or firewall
-- ✅ **Enable TLS** for Docker Remote API
+- ✅ **Enable TLS** for Docker Remote API (port 2376)
 - ✅ **Never expose port 2375 publicly** without proper security
 - ✅ **Implement authentication** via Clerk or similar service
 - ✅ **Regularly update** dependencies and Docker images
+- ✅ **Use network policies** to restrict container communication
+- ✅ **Monitor logs** for suspicious activity
 
-### Recommended Setup
+### Network Security Configuration
 ```bash
-# Enable Docker Remote API with TLS
-dockerd --tlsverify --tlscacert=ca.pem --tlscert=server-cert.pem --tlskey=server-key.pem -H=0.0.0.0:2376
+# Restrict Docker API to specific IP ranges (iptables example)
+sudo iptables -A INPUT -p tcp --dport 2375 -s 192.168.1.0/24 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 2375 -j DROP
 ```
 
 ---
@@ -134,6 +217,34 @@ dockerd --tlsverify --tlscacert=ca.pem --tlscert=server-cert.pem --tlskey=server
 - [ ] Docker Compose file management
 - [ ] Image build & push capabilities
 - [ ] Role-based access control (RBAC)
+- [ ] TLS configuration wizard
+- [ ] Audit logging
+
+---
+
+## 🐛 Troubleshooting
+
+### Cannot connect to Docker host
+```bash
+# Check if Docker API is listening
+sudo netstat -tlnp | grep 2375
+
+# Test connection
+curl http://<YOUR_HOST_IP>:2375/version
+```
+
+### Permission denied errors
+```bash
+# Add user to docker group
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+### WebSocket connection fails
+
+- Ensure no firewall is blocking WebSocket connections
+- Check browser console for specific error messages
+- Verify backend container can reach Docker host
 
 ---
 
