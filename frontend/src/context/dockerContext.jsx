@@ -18,9 +18,9 @@ export const DockerProvider = ({ children }) => {
   const [activeTab, setActiveTab] = useState('containers');
   const [selectedItem, setSelectedItem] = useState(null);
   const [loading, setLoading] = useState(false);
-  
-  const API_BASE_URL = 'http://210.79.128.250:3000/api/v1';
-  const WS_URL = 'ws://210.79.128.250:3001';
+
+  const API_BASE_URL = 'http://localhost:3000/api/v1';
+  const WS_URL = 'ws://localhost:3001';
 
   useEffect(() => {
     if (host) {
@@ -28,10 +28,28 @@ export const DockerProvider = ({ children }) => {
     }
   }, [host]);
 
-  const fetchData = async (endpoint) => {
+  // const fetchData = async (endpoint) => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await axios.get(`${API_BASE_URL}${endpoint}?host=${host}`);
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Fetch error:', error);
+  //     throw error;
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const fetchData = async (endpoint, params = {}) => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL}${endpoint}?host=${host}`);
+      const response = await axios.get(`${API_BASE_URL}${endpoint}`, {
+        params: {
+          host,
+          ...params
+        }
+      });
       return response.data;
     } catch (error) {
       console.error('Fetch error:', error);
@@ -41,12 +59,16 @@ export const DockerProvider = ({ children }) => {
     }
   };
 
-  const performAction = async (endpoint, method = 'post', data = null) => {
+
+  const performAction = async (endpoint, method = 'post', params = {}) => {
     try {
       const response = await axios({
+        url: `${API_BASE_URL}${endpoint}`,
         method,
-        url: `${API_BASE_URL}${endpoint}?host=${host}`,
-        data
+        params: {
+          host,
+          ...params
+        }
       });
       return response.data;
     } catch (error) {
@@ -54,6 +76,7 @@ export const DockerProvider = ({ children }) => {
       throw error;
     }
   };
+
 
   const value = {
     host,

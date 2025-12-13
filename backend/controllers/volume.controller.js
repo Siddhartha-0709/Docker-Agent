@@ -1,6 +1,5 @@
 import Docker from 'dockerode';
 
-
 const listVolumes = async (req, res) => {
   try {
     const host = req.query.host;

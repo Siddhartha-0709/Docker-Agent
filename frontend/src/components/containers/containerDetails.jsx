@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/immutability */
 import React, { useState, useEffect } from 'react';
 import { Play, Square, RotateCw, Trash2, Terminal, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -23,7 +24,8 @@ export default function ContainerDetails({ container, onUpdate }) {
 
   const loadDetails = async () => {
     try {
-      const data = await fetchData(`/containers/inspect?id=${container.Id}`);
+      const data = await fetchData('/containers/inspect', { id: container.Id });
+
       setDetails(data);
     } catch (error) {
       console.error('Failed to load details:', error);
@@ -37,26 +39,27 @@ export default function ContainerDetails({ container, onUpdate }) {
 
       switch (action) {
         case 'start':
-          endpoint = `/containers/start?id=${container.Id}`;
+          endpoint = '/containers/start';
           break;
         case 'stop':
-          endpoint = `/containers/stop?id=${container.Id}`;
+          endpoint = '/containers/stop';
           break;
         case 'restart':
-          endpoint = `/containers/restart?id=${container.Id}`;
+          endpoint = '/containers/restart';
           break;
         case 'remove':
-          endpoint = `/containers/remove?id=${container.Id}`;
+          endpoint = '/containers/remove';
           method = 'delete';
           break;
       }
 
-      await performAction(endpoint, method);
+      await performAction(endpoint, method, { id: container.Id });
       onUpdate();
     } catch (error) {
       console.error('Action failed:', error);
     }
   };
+
 
   const connectToLogs = () => {
     if (wsConnection) wsConnection.close();

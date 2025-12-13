@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Image, Network, HardDrive, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -13,7 +13,27 @@ const navigationItems = [
 ];
 
 export default function Sidebar() {
-  const { activeTab, setActiveTab, setSelectedItem, host, setShowHostModal } = useDocker();
+  const {
+    activeTab,
+    setActiveTab,
+    setSelectedItem,
+    host,
+    setShowHostModal,
+    fetchData
+  } = useDocker();
+
+  const [connected, setConnected] = useState(false);
+
+useEffect(() => {
+  if (!host) {
+    setConnected(false);
+    return;
+  }
+
+  fetchData('/docker/ping')
+    .then(res => setConnected(Boolean(res?.connected)))
+    .catch(() => setConnected(false));
+}, [host]);
 
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
@@ -40,7 +60,7 @@ export default function Sidebar() {
         {navigationItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
-          
+
           return (
             <Button
               key={item.id}
@@ -61,10 +81,18 @@ export default function Sidebar() {
       <div className="p-4 space-y-3">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Status</span>
-          <Badge variant="default" className="bg-green-600">
-            <span className="w-1.5 h-1.5 bg-white rounded-full mr-1.5" />
-            Connected
-          </Badge>
+
+          {connected ? (
+            <Badge className="bg-green-600">
+              <span className="w-1.5 h-1.5 bg-white rounded-full mr-1.5" />
+              Connected
+            </Badge>
+          ) : (
+            <Badge variant="destructive" className="bg-red-600">
+              <span className="w-1.5 h-1.5 bg-white rounded-full mr-1.5" />
+              Disconnected
+            </Badge>
+          )}
         </div>
 
         <div className="text-xs text-muted-foreground">

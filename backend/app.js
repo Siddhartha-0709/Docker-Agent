@@ -4,6 +4,7 @@ import containerRouter from './routers/container.router.js';
 import imageRouter from './routers/image.router.js';
 import networkRouter from './routers/network.router.js';
 import volumeRouter from './routers/volume.router.js';
+import Docker from 'dockerode';
 
 const app = express();
 
@@ -25,6 +26,30 @@ app.get('/', (req, res) => {
     }
   });
 });
+
+// Docker Ping Endpoint
+app.get('/api/v1/docker/ping', async (req, res) => {
+  const { host } = req.query;
+
+  if (!host) {
+    return res.status(400).json({ connected: false });
+  }
+
+  try {
+    const docker = new Docker({ host, port: 2375 });
+
+    await docker.ping(); 
+
+    res.json({ connected: true });
+  } catch (err) {
+    res.status(500).json({
+      connected: false,
+      error: err.message
+    });
+  }
+});
+
+
 
 // API Routes
 app.use('/api/v1/containers', containerRouter);

@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-hooks/immutability */
 import React, { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +17,7 @@ export default function ContainerList({ onSelect }) {
   const loadContainers = async () => {
     try {
       const data = await fetchData('/containers/getAll');
+      
       setContainers(data);
     } catch (error) {
       console.error('Failed to load containers:', error);

@@ -14,14 +14,16 @@ export default function VolumeDetails({ volume, onUpdate }) {
   const handleDelete = async () => {
     try {
       await performAction(
-        `/volumes/delete?volumeName=${volume.Name}`,
-        'delete'
+        '/volumes/delete',
+        'delete',
+        { volumeName: volume.Name }
       );
       onUpdate();
     } catch (error) {
       console.error('Delete failed:', error);
     }
   };
+
 
   return (
     <ScrollArea className="h-full">

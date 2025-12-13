@@ -1,8 +1,26 @@
 {
+  "name": "docker-agent-backend",
+  "version": "1.0.0",
+  "description": "The backend of docker agent application.",
+  "keywords": [
+    "Docker",
+    "Agent",
+    "Containerization",
+    "Docker"
+  ],
+  "license": "ISC",
+  "author": "Siddhartha Mukherjee",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "dockerode": "^4.0.9",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "ws": "^8.18.3"
-  }
+  },
+  "devDependencies": {}
 }

@@ -5,10 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner'; // or any toast lib you're using
 import { useDocker } from '../../context/dockerContext';
 
 export default function ImageDetails({ image, onUpdate }) {
   const { performAction } = useDocker();
+
+  // const normalizeImageId = (id) =>
+  //   id.startsWith('sha256:') ? id.replace('sha256:', '') : id;
+
 
   const handleAction = async (action) => {
     try {
@@ -17,14 +22,39 @@ export default function ImageDetails({ image, onUpdate }) {
           `/images/runImage?id=${image.RepoTags?.[0] || image.Id}`,
           'post'
         );
-      } else if (action === 'delete') {
-        await performAction(`/images/deleteImage?id=${image.Id}`, 'delete');
       }
+
+      if (action === 'delete') {
+        await performAction(
+          `/images/deleteImage?id=${image.Id}`,
+          'delete'
+        );
+      }
+
       onUpdate();
     } catch (error) {
-      console.error('Action failed:', error);
+      const msg =
+        error?.response?.data?.error ||
+        'Action failed due to an unexpected error';
+
+      if (msg.toLowerCase().includes('container')) {
+        toast.error('Cannot delete image: one or more containers exist.');
+      } else {
+        toast.error(msg);
+      }
+
+      alert(
+        'Cannot delete image. Please stop and remove all containers using this image.'
+      );
+      
+      console.error('Action failed:', msg);
     }
   };
+
+
+
+
+
 
   const formatBytes = (bytes) => {
     if (bytes === 0) return '0 Bytes';
@@ -110,7 +140,7 @@ export default function ImageDetails({ image, onUpdate }) {
                 <code key={i} className="text-xs bg-muted px-2 py-1 rounded block break-all">
                   {digest}
                 </code>
-              ))}   
+              ))}
             </CardContent>
           </Card>
         )}

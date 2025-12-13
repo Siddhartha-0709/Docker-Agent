@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  backend:
+    image: siddhartha0709/docker-agent-backend:latest
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    restart: unless-stopped
+
+  frontend:
+    image: siddhartha0709/docker-agent-frontend:latest
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend

@@ -1,8 +1,8 @@
 import Docker from 'dockerode';
+import 'dotenv/config'
 import { WebSocketServer } from 'ws';
 
 
-const docker = new Docker({ host: 'http://210.79.128.250', port: 2375 });
 
 // Controller to list all containers
 
@@ -89,9 +89,16 @@ const inspectContainer = async (req, res) => {
 
 const wss = new WebSocketServer({ port: 3001 });
 
+
 wss.on('connection', async (ws, req) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const containerId = url.searchParams.get('id');
+    const host = url.searchParams.get('host');
+
+    const docker = new Docker({
+        host,      // e.g. "210.79.128.250"
+        port: 2375
+    });
 
     if (!containerId) {
         ws.send('Error: container id not provided');
